@@ -5,8 +5,9 @@ import multiprocessing
 def get_result(queue):
     try:
         while True:
-            x = queue.get()
-            y = queue.get()
+            if queue.empty():
+                continue
+            x, y = queue.get()
             step = x ** y
             sum = 0
             for i in range(step):
@@ -24,18 +25,18 @@ def get_result(queue):
 if __name__ == '__main__':
     queue = multiprocessing.Queue()
     list_process = []
+
+    process = multiprocessing.Process(target=get_result, args=(queue,))
+    process.start()
+
     try:
         while True:
             x, y = [int(x) for x in input("Введите число и степень: ").split()]
-            queue.put(x)
-            queue.put(y)
-            process = multiprocessing.Process(target=get_result, args=(queue,))
-            process.start()
-            list_process.append(process)
+            put = [x, y]
+            queue.put(put)
     except KeyboardInterrupt:
         print("Конец")
     except ValueError:
         print("Завершение")
     except Exception:
         print("Что-то пошло не так ...")
-    [process.join() for process in list_process]
