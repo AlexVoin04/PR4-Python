@@ -7,8 +7,8 @@ class FileShedule(FileSystemEventHandler):
         self._file_path = file_path
 
     def on_modified(self, event):
-        if(event.src_path == self._file_path):
-            with open(self._file_path) as f:
+        if event.src_path == self._file_path:
+            with open(self._file_path, 'r') as f:
                 for line in f:
                     pass
                 last_res = line.split(" ")
